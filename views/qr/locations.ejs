@@ -1,0 +1,55 @@
+<h3>QR Floor & Location Master</h3>
+
+<form method="POST" action="/qr-locations/create" class="card p-3 mb-4">
+  <div class="row">
+    <div class="col-md-3">
+      <label>Floor Name</label>
+      <input name="floor_name" class="form-control" placeholder="8th Floor" required>
+    </div>
+
+    <div class="col-md-3">
+      <label>Location Name</label>
+      <input name="location_name" class="form-control" placeholder="Washroom / Cafeteria" required>
+    </div>
+
+    <div class="col-md-3">
+      <label>Department</label>
+      <input name="department" class="form-control" placeholder="Admin / HK / IT">
+    </div>
+
+    <div class="col-md-3 mt-4">
+      <button class="btn btn-primary w-100">Generate QR</button>
+    </div>
+  </div>
+</form>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Floor</th>
+      <th>Location</th>
+      <th>Department</th>
+      <th>QR</th>
+      <th>Complaint URL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% locations.forEach(row => { %>
+      <tr>
+        <td><%= row.floor_name %></td>
+        <td><%= row.location_name %></td>
+        <td><%= row.department || "" %></td>
+        <td>
+          <img src="<%= row.qr_code %>" width="90">
+          <br>
+          <a href="<%= row.qr_code %>" download="QR_<%= row.floor_name %>_<%= row.location_name %>.png">
+            Download
+          </a>
+        </td>
+        <td>
+          <a href="<%= row.complaint_url %>" target="_blank">Open Link</a>
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
