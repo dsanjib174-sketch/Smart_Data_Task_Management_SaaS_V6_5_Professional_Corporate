@@ -20,3 +20,5 @@ app.use('/complaints',require('./src/routes/complaints'));
 app.get('/health',(req,res)=>res.json({ok:true,version:'6.5.0'}));
 app.use((req,res)=>res.status(404).render('partials/404'));
 app.listen(PORT,()=>console.log(`Smart Data V6.5 running on ${PORT}`));
+const qrLocationRoutes = require("./routes/qrLocations");
+app.use("/qr-locations", qrLocationRoutes);
