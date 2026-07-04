@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS qr_locations (
+  id SERIAL PRIMARY KEY,
+  tenant_id INTEGER NOT NULL,
+  floor_name VARCHAR(100) NOT NULL,
+  location_name VARCHAR(150) NOT NULL,
+  department VARCHAR(100),
+  qr_code TEXT,
+  complaint_url TEXT,
+  status VARCHAR(20) DEFAULT 'Active',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
