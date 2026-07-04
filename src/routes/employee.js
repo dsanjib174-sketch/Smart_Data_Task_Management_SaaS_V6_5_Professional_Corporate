@@ -1,0 +1,2 @@
+const express=require('express'); const {pool}=require('../config/db'); const {requireRole}=require('../middleware/auth'); const router=express.Router(); router.use(requireRole(['SUPER_ADMIN','SD_ADMIN','SD_SUPPORT','SD_DEVELOPER','SD_ACCOUNTS']));
+router.get('/',async(req,res)=>{ const stats=(await pool.query("SELECT status,count(*) c FROM tasks GROUP BY status")).rows; res.render('employee/dashboard',{stats}); }); module.exports=router;

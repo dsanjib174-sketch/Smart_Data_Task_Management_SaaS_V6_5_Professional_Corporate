@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: smart-data-task-management
+    env: node
+    plan: free
+    buildCommand: npm install && npm run db:init && npm run seed
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: APP_NAME
+        value: Smart Data Task Management
+      - key: PASSWORD_RESET_CODE
+        value: RESET2026
+      - key: SEED_SUPERADMIN_EMAIL
+        value: admin@smartdata.local
+      - key: SEED_SUPERADMIN_PASSWORD
+        value: Admin12345

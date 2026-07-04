@@ -1,0 +1,9 @@
+const express=require('express'); const bcrypt=require('bcryptjs'); const router=express.Router(); const {pool}=require('../config/db');
+router.get('/',(req,res)=> req.session.user ? res.redirect('/dashboard') : res.redirect('/login'));
+router.get('/login',(req,res)=>res.render('auth/login',{error:null}));
+router.post('/login',async(req,res)=>{ const {email,password}=req.body; const r=await pool.query('SELECT * FROM users WHERE lower(email)=lower($1) AND status=$2',[email,'active']); if(!r.rows[0]) return res.render('auth/login',{error:'Invalid email or password'}); const ok=await bcrypt.compare(password,r.rows[0].password_hash); if(!ok) return res.render('auth/login',{error:'Invalid email or password'}); const u=r.rows[0]; req.session.user={id:u.id,tenant_id:u.tenant_id,name:u.name,email:u.email,role:u.role,department:u.department}; res.redirect('/dashboard'); });
+router.get('/dashboard',(req,res)=>{ if(!req.session.user) return res.redirect('/login'); const role=req.session.user.role; if(role==='SUPER_ADMIN') return res.redirect('/superadmin'); if(['SD_ADMIN','SD_SUPPORT','SD_DEVELOPER','SD_ACCOUNTS'].includes(role)) return res.redirect('/employee'); if(role==='CLIENT_ADMIN') return res.redirect('/client'); return res.redirect('/tasks');});
+router.get('/forgot-password',(req,res)=>res.render('auth/forgot',{msg:null,error:null}));
+router.post('/forgot-password',async(req,res)=>{ const {email,reset_code,new_password}=req.body; if(reset_code!==(process.env.PASSWORD_RESET_CODE||'RESET2026')) return res.render('auth/forgot',{error:'Invalid reset code',msg:null}); const hash=await bcrypt.hash(new_password,10); const r=await pool.query('UPDATE users SET password_hash=$1 WHERE lower(email)=lower($2)',[hash,email]); res.render('auth/forgot',{msg:r.rowCount?'Password updated. Please login.':'Email not found',error:null}); });
+router.get('/logout',(req,res)=>req.session.destroy(()=>res.redirect('/login')));
+module.exports=router;
