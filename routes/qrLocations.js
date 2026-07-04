@@ -1,7 +1,7 @@
 const express = require("express");
 const QRCode = require("qrcode");
 const router = express.Router();
-const db = require("../config/db");
+const { pool: db } = require("../config/database");
 const { requireAuth } = require("../middleware/auth");
 
 // QR List Page
